@@ -10,7 +10,7 @@
 
 class << `window`
 	def self.document
-		Document.from_native(`window.document`)
+    Document
 	end
 
 	def self.puts (*what)

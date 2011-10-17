@@ -27,3 +27,6 @@ class << `Document`
 		`self.native.documentElement = element`
 	end
 end
+
+Document = `document`
+
