@@ -15,10 +15,20 @@ class << `window`
 
 	def self.puts (*what)
 		what.each {|what|
-			`console.log(what);`
+			`self.console.log(what);`
 		}
+	end
 
-		nil
+	def self.alert (text)
+		`self.alert(text)`
+	end
+end
+
+Window = `window`
+
+module Kernel
+	def alert (text)
+		Window.alert(text)
 	end
 end
 
