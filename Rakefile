@@ -1,6 +1,8 @@
 require 'rake'
 require 'opal/bundle_task'
 
+task :default => ['opal:install', 'opal:test']
+
 Opal::BundleTask.new do |t|
   # this is the default, but have it here for clarity
   t.files = Dir['lib/**/*.rb']
