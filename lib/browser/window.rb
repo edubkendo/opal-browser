@@ -8,23 +8,21 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-class << `window`
+class << Window
 	def self.document
-    Document
+    Document(`window.document`)
 	end
 
 	def self.puts (*what)
 		what.each {|what|
-			`self.console.log(what);`
+			`window.console.log(what);`
 		}
 	end
 
 	def self.alert (text)
-		`self.alert(text)`
+		`window.alert(text)`
 	end
 end
-
-Window = `window`
 
 module Kernel
 	def alert (text)

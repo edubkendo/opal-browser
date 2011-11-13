@@ -8,13 +8,13 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-class << `Element`
+class Element
 	def name
-		`return self.native.nodeName`
+		`self.nodeName`
 	end
 
 	def document
-		Document.from_native(`self.native.ownerDocument`)
+		Document(`self.ownerDocument`)
 	end
 
 	def root
@@ -22,24 +22,24 @@ class << `Element`
 	end
 
 	def parent
-		`return self.native.parentNode`
+		`self.parentNode`
 	end
 
 	def children
-
+		Array(`self.children`).map { |e| Element(e) }
 	end
 
 	def [] (name)
-		`return self.native.getAttribute(#{name.to_s})`
+		`self.getAttribute(#{name.to_s})`
 	end
 
 	def []= (name, value)
-		`self.native.setAttribute(#{name.to_s}, #{value.to_s})`
+		`self.setAttribute(#{name.to_s}, #{value.to_s})`
 	end
 
 	def attributes
-		Hash[Array.from_native(`self.attributes`).map {|attribute|
-			[`attribute.name`, `attribute.value`]
+		Hash[Array(`self.attributes`).map {|attr|
+			[`attr.name`, `attr.value`]
 		}]
 	end
 
@@ -54,22 +54,46 @@ class << `Element`
 	def xpath (path)
 		`
 			var result = [];
-			var tmp    = (self.native.ownerDocument || self.native).evaluate(
-				path, self.native, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			var tmp    = (self.ownerDocument || self).evaluate(
+				path, self, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
 			for (var i = 0; i < tmp.snapshotLength; i++) {
 				result.push(tmp.snapshotItem(i));
 			}
-
-			return result;
 		`
+
+		result.map { |e| Element(e) }
 	end
 
 	def css (path)
-		`self.native.querySelectorAll(path)`
+		Array(`self.querySelectorAll(path)`).map { |e| Element(e) }
+	end
+
+	def on (what, capture = false, &block)
+		return unless block
+
+		`self.addEventListener(what, function (event) { #{block.(Element(`this`), event)} }, capture)`
+	end
+
+	def fire (what, data, bubble = false)
+		`
+			var event = document.createEvent('HTMLEvents');
+
+			event.initEvent('dataavailable', bubble, true);
+			event.eventName = what;
+			event.data      = data;
+			
+			return self.dispatchEvent(event);
+		`
 	end
 
 	def to_s
 		"#<Document::Element(#{name}): #{children}>"
+	end
+end
+
+module Kernel
+	def Element (what)
+		Element.from_native(what)
 	end
 end

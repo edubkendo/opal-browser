@@ -10,23 +10,22 @@
 
 require 'browser/document/element'
 
-class << `Document`
-	def xpath (path)
-		root.xpath(path)
-	end
+class << Document
+	extend Forwardable
 
-	def css (path)
-		root.css(path)
-	end
+	def_delegators :root, :xpath, :css, :on, :fire
 
 	def root
-		`self.native.documentElement`
+		`self.documentElement`
 	end
 
 	def root= (element)
-		`self.native.documentElement = element`
+		`self.documentElement = element`
 	end
 end
 
-Document = `document`
-
+module Kernel
+	def Document (what)
+		Document.from_native(what)
+	end
+end
