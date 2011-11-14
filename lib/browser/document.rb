@@ -10,22 +10,27 @@
 
 require 'browser/document/element'
 
-class << Document
+class Document
 	extend Forwardable
 
 	def_delegators :root, :xpath, :css, :on, :fire
+	attr_reader    :native
+
+	def initialize (native)
+		@native = native
+	end
 
 	def root
-		`self.documentElement`
+		`#@native.documentElement`
 	end
 
 	def root= (element)
-		`self.documentElement = element`
+		`#@native.documentElement = element`
 	end
 end
 
 module Kernel
 	def Document (what)
-		Document.from_native(what)
+		Document.new(what)
 	end
 end

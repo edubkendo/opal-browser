@@ -9,12 +9,18 @@
 #++
 
 class Element
+	attr_reader :native
+
+	def initialize (native)
+		@native = native
+	end
+
 	def name
-		`self.nodeName`
+		`#@native.nodeName`
 	end
 
 	def document
-		Document(`self.ownerDocument`)
+		Document(`#@native.ownerDocument`)
 	end
 
 	def root
@@ -22,23 +28,23 @@ class Element
 	end
 
 	def parent
-		`self.parentNode`
+		`#@native.parentNode`
 	end
 
 	def children
-		Array(`self.children`).map { |e| Element(e) }
+		Array(`#@native.children`).map { |e| Element(e) }
 	end
 
 	def [] (name)
-		`self.getAttribute(#{name.to_s})`
+		`#@native.getAttribute(#{name.to_s})`
 	end
 
 	def []= (name, value)
-		`self.setAttribute(#{name.to_s}, #{value.to_s})`
+		`#@native.setAttribute(#{name.to_s}, #{value.to_s})`
 	end
 
 	def attributes
-		Hash[Array(`self.attributes`).map {|attr|
+		Hash[Array(`#@native.attributes`).map {|attr|
 			[`attr.name`, `attr.value`]
 		}]
 	end
@@ -66,13 +72,13 @@ class Element
 	end
 
 	def css (path)
-		Array(`self.querySelectorAll(path)`).map { |e| Element(e) }
+		Array(`#@native.querySelectorAll(path)`).map { |e| Element(e) }
 	end
 
 	def on (what, capture = false, &block)
 		return unless block
 
-		`self.addEventListener(what, function (event) { #{block.(Element(`this`), event)} }, capture)`
+		`#@native.addEventListener(what, function (event) { #{block.(Element(`this`), event)} }, capture)`
 	end
 
 	def fire (what, data, bubble = false)
@@ -94,6 +100,6 @@ end
 
 module Kernel
 	def Element (what)
-		Element.from_native(what)
+		Element.new(what)
 	end
 end
