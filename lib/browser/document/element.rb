@@ -78,7 +78,7 @@ class Element
 	def on (what, capture = false, &block)
 		return unless block
 
-		`#@native.addEventListener(what, function (event) { #{block.(Element(`this`), event)} }, capture)`
+		`#@native.addEventListener(what, function (event) { #{block.call(Element(`this`), event)} }, capture)`
 	end
 
 	def fire (what, data, bubble = false)

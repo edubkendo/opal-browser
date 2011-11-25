@@ -5,7 +5,7 @@ task :default => ['opal:install', 'opal:test']
 
 Opal::BundleTask.new do |t|
   # this is the default, but have it here for clarity
-  t.files = Dir['lib/**/*.rb']
+  t.files = FileList['lib/**/*.rb']
 
   # test configuration
   t.config :test do
@@ -16,7 +16,7 @@ Opal::BundleTask.new do |t|
     t.out = 'opal-browser.test.js'
 
     # for tests, we MUST include spec/ dir as well..
-    t.files = Dir['{lib,spec}/**/*.rb']
+    t.files = FileList['{lib,spec}/**/*.rb']
 
     # we also rely on opaltest for actually doign the tests
     t.gem 'opaltest', git: 'git://github.com/adambeynon/opaltest.git'
