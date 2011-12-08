@@ -4,7 +4,7 @@ require 'opaltest/spec'       # DSL for mspec style specs, on top of MiniTest
 require 'opaltest/autorun'    # Autoloads.. ie: run tests
 
 # make sure our lib is loaded
-require 'browser'
+require 'opal/browser'
 
 ##
 # If this is the 'main' file, then load all specs found in spec/

@@ -8,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-require 'browser/document/element'
+require 'opal/browser/document/element'
 
 class Document
 	extend Forwardable

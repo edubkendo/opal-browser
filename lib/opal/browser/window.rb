@@ -8,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-class << Window
+class Window
 	def self.document
     Document(`window.document`)
 	end
@@ -30,4 +30,4 @@ module Kernel
 	end
 end
 
-require 'browser/document'
+require 'opal/browser/document'
