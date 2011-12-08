@@ -9,8 +9,6 @@
 #++
 
 class Element
-	attr_reader :native
-
 	def initialize (native)
 		@native = native
 	end
@@ -58,10 +56,11 @@ class Element
 	end
 
 	def xpath (path)
+		result = []
+
 		`
-			var result = [];
-			var tmp    = (self.ownerDocument || self).evaluate(
-				path, self, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			var tmp = (#@native.ownerDocument || #@native.self).evaluate(
+				path, #@native, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
 			for (var i = 0; i < tmp.snapshotLength; i++) {
 				result.push(tmp.snapshotItem(i));
@@ -95,6 +94,10 @@ class Element
 
 	def to_s
 		"#<Document::Element(#{name}): #{children}>"
+	end
+
+	def to_native
+		@native
 	end
 end
 

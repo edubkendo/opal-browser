@@ -6,7 +6,7 @@ task :default => ['opal:install', 'opal:test']
 Opal::BundleTask.new do |t|
   # this is the default, but have it here for clarity
   t.files = FileList['lib/**/*.rb']
-	t.stdlib = %w[rbconfig optparse]
+	t.stdlib = %w[rbconfig optparse forwardable]
 
   # test configuration
   t.config :test do

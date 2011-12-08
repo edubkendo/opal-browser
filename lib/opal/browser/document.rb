@@ -8,24 +8,28 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
+require 'forwardable'
 require 'opal/browser/document/element'
 
 class Document
 	extend Forwardable
 
 	def_delegators :root, :xpath, :css, :on, :fire
-	attr_reader    :native
 
 	def initialize (native)
 		@native = native
 	end
 
 	def root
-		`#@native.documentElement`
+		Element(`#@native.documentElement`)
 	end
 
 	def root= (element)
-		`#@native.documentElement = element`
+		`#@native.documentElement = #{element.to_native}`
+	end
+
+	def to_native
+		@native
 	end
 end
 
