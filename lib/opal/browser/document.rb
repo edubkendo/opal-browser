@@ -28,6 +28,10 @@ class Document
 		`#@native.documentElement = #{element.to_native}`
 	end
 
+	def [] (what)
+		`#@native.getElementById(what)` || xpath(what).first || css(what).first
+	end
+
 	def to_native
 		@native
 	end

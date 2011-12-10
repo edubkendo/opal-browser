@@ -31,3 +31,5 @@ module Kernel
 end
 
 require 'opal/browser/document'
+
+$document = Window.document
