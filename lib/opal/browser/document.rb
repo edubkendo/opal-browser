@@ -29,7 +29,15 @@ class Document
 	end
 
 	def [] (what)
-		`#@native.getElementById(what)` || xpath(what).first || css(what).first
+		`
+			var result = #@native.getElementById(what);
+
+			if (result) {
+				return #{Element(`result`)};
+			}
+		`
+		
+		xpath(what).first || css(what).first
 	end
 
 	def to_native
