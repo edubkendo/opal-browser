@@ -20,7 +20,7 @@ module Node
 	end
 
 	def document
-		Document(`#@native.ownerDocument`)
+		Document.new(`#@native.ownerDocument`)
 	end
 
 	def root
@@ -28,7 +28,7 @@ module Node
 	end
 
 	def parent
-		`#@native.parentNode`
+		Element.new(`#@native.parentNode`) unless Opal.undefined?(`#@native.parentNode`)
 	end
 
 	def xpath (path)
@@ -43,17 +43,17 @@ module Node
 			}
 		`
 
-		result.map { |e| Element(e) }
+		result.map { |e| Element.new(e) }
 	end
 
 	def css (path)
-		Array(`#@native.querySelectorAll(path)`).map { |e| Element(e) }
+		Array(`#@native.querySelectorAll(path)`).map { |e| Element.new(e) }
 	end
 
 	def on (what, capture = false, &block)
 		raise ArgumentError, 'no block has been passed' unless block
 
-		`#@native.addEventListener(#{Document::Event.normalize(what)}, function (event) { #{block.call(Element(`this`), Document::Event.new(event))} }, capture)`
+		`#@native.addEventListener(#{Document::Event.normalize(what)}, function (event) { #{block.call(Element.new(`this`), Document::Event.new(event))} }, capture)`
 	end
 
 	def fire (what, data, bubble = false)

@@ -20,7 +20,7 @@ class Document
 	end
 
 	def root
-		Element(`#@native.documentElement`)
+		Element.new(`#@native.documentElement`)
 	end
 
 	def root= (element)
@@ -32,7 +32,7 @@ class Document
 			var result = #@native.getElementById(what);
 
 			if (result) {
-				return #{Element(`result`)};
+				return #{Element.new(`result`)};
 			}
 		`
 		
@@ -41,11 +41,5 @@ class Document
 
 	def to_native
 		@native
-	end
-end
-
-module Kernel
-	def Document (what)
-		Document.new(what)
 	end
 end

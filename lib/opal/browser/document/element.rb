@@ -18,7 +18,7 @@ class Element
 	end
 
 	def children
-		Array(`#@native.children`).map { |e| Element(e) }
+		Array(`#@native.children`).map { |e| Element.new(e) }
 	end
 
 	def [] (name)
@@ -52,10 +52,4 @@ class Element
 	end
 end
 
-end
-
-module Kernel
-	def Element (what)
-		Document::Element.new(what)
-	end
 end

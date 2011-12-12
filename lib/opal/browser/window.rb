@@ -8,13 +8,15 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
+require 'opal/browser/window/location'
+
 class Window
 	def initialize (native)
 		@native = native
 	end
 
 	def document
-    Document(`#@native.document`)
+    Document.new(`#@native.document`)
 	end
 
 	def puts (*what)
@@ -27,20 +29,18 @@ class Window
 		`#@native.alert(text)`
 	end
 
+	def location
+		Location.new(`#@native.location`) unless Opal.undefined?(`#@native.location`)
+	end
+
 	def to_native
 		@native
 	end
 end
 
-module Kernel
-	def Window (what)
-		Window.new(what)
-	end
-end
-
 require 'opal/browser/document'
 
-$window   = Window(`window`)
+$window   = Window.new(`window`)
 $document = $window.document
 
 module Kernel
