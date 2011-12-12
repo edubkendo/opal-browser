@@ -8,4 +8,6 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
+require 'forwardable'
+
 require 'opal/browser/window'

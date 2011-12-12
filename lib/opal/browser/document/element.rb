@@ -8,25 +8,13 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
+class Document
+
 class Element
+	include Node
+
 	def initialize (native)
 		@native = native
-	end
-
-	def name
-		`#@native.nodeName`
-	end
-
-	def document
-		Document(`#@native.ownerDocument`)
-	end
-
-	def root
-		document.root
-	end
-
-	def parent
-		`#@native.parentNode`
 	end
 
 	def children
@@ -55,45 +43,8 @@ class Element
 		attributes.values
 	end
 
-	def xpath (path)
-		result = []
-
-		`
-			var tmp = (#@native.ownerDocument || #@native.self).evaluate(
-				path, #@native, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-
-			for (var i = 0; i < tmp.snapshotLength; i++) {
-				result.push(tmp.snapshotItem(i));
-			}
-		`
-
-		result.map { |e| Element(e) }
-	end
-
-	def css (path)
-		Array(`#@native.querySelectorAll(path)`).map { |e| Element(e) }
-	end
-
-	def on (what, capture = false, &block)
-		return unless block
-
-		`#@native.addEventListener(what, function (event) { #{block.call(Element(`this`), event)} }, capture)`
-	end
-
-	def fire (what, data, bubble = false)
-		`
-			var event = document.createEvent('HTMLEvents');
-
-			event.initEvent('dataavailable', bubble, true);
-			event.eventName = what;
-			event.data      = data;
-			
-			return self.dispatchEvent(event);
-		`
-	end
-
-	def to_s
-		"#<Document::Element(#{name}): #{children}>"
+	def inspect
+		"#<Document::Element(#{name}): #{children.inspect}>"
 	end
 
 	def to_native
@@ -101,8 +52,10 @@ class Element
 	end
 end
 
+end
+
 module Kernel
 	def Element (what)
-		Element.new(what)
+		Document::Element.new(what)
 	end
 end

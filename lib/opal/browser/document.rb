@@ -8,13 +8,12 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-require 'forwardable'
+require 'opal/browser/document/event'
+require 'opal/browser/document/node'
 require 'opal/browser/document/element'
 
 class Document
-	extend Forwardable
-
-	def_delegators :root, :xpath, :css, :on, :fire
+	include Node
 
 	def initialize (native)
 		@native = native

@@ -9,6 +9,10 @@
 #++
 
 class Window
+	def initialize (native)
+		@native = native
+	end
+
 	def document
     Document(`#@native.document`)
 	end
@@ -21,6 +25,10 @@ class Window
 
 	def alert (text)
 		`#@native.alert(text)`
+	end
+
+	def to_native
+		@native
 	end
 end
 
