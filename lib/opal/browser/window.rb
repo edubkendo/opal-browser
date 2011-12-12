@@ -9,27 +9,34 @@
 #++
 
 class Window
-	def self.document
-    Document(`window.document`)
+	def document
+    Document(`#@native.document`)
 	end
 
-	def self.puts (*what)
+	def puts (*what)
 		what.each {|what|
-			`window.console.log(what);`
+			`#@native.console.log(what);`
 		}
 	end
 
-	def self.alert (text)
-		`window.alert(text)`
+	def alert (text)
+		`#@native.alert(text)`
 	end
 end
 
 module Kernel
-	def alert (text)
-		Window.alert(text)
+	def Window (what)
+		Window.new(what)
 	end
 end
 
 require 'opal/browser/document'
 
-$document = Window.document
+$window   = Window(`window`)
+$document = $window.document
+
+module Kernel
+	def alert (text)
+		$window.alert(text)
+	end
+end
