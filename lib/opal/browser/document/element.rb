@@ -8,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-class Document
+module Browser; class Document
 
 class Element
 	include Node
@@ -52,4 +52,4 @@ class Element
 	end
 end
 
-end
+end; end

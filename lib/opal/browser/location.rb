@@ -8,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-class Window
+module Browser
 
 class Location
 	attr_accessor_bridge `#@native`, :hash, :host, :hostname, :href, :pathname, :port, :protocol, :search
@@ -17,7 +17,7 @@ class Location
 		@native = native
 	end
 
-	def assing (url)
+	def assign (url)
 		`#@native.assign(#{url.to_s})`
 	end
 

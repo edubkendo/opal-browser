@@ -1,6 +1,6 @@
 require File.expand_path('../spec_helper', __FILE__)
 
-describe `Document` do
+describe Browser::Document do
 	describe '#xpath' do
 		it 'should find the test div' do
 			$window.document.xpath('//div[@id="test"]').tap {|a|

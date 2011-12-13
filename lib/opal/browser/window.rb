@@ -8,7 +8,10 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-require 'opal/browser/window/location'
+require 'opal/browser/location'
+require 'opal/browser/navigator'
+
+module Browser
 
 class Window
 	def initialize (native)
@@ -33,9 +36,15 @@ class Window
 		Location.new(`#@native.location`) unless Opal.undefined?(`#@native.location`)
 	end
 
+	def navigator
+		Navigator.new(`#@native.navigator`) unless Opal.undefined?(`#@native.navigator`)
+	end
+
 	def to_native
 		@native
 	end
+end
+
 end
 
 require 'opal/browser/document'

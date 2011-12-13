@@ -8,9 +8,12 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
+require 'opal/browser/location'
 require 'opal/browser/document/event'
 require 'opal/browser/document/node'
 require 'opal/browser/document/element'
+
+module Browser
 
 class Document
 	include Node
@@ -39,7 +42,13 @@ class Document
 		xpath(what).first || css(what).first
 	end
 
+	def location
+		Location.new(`#@native.location`) unless Opal.undefined?(`#@native.location`)
+	end
+
 	def to_native
 		@native
 	end
+end
+
 end
