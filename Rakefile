@@ -21,3 +21,5 @@ Opal::BuilderTask.new do |t|
 		t.main = 'spec/spec_helper.rb'
 	end
 end
+
+task :default => ['opal:test']
