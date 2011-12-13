@@ -19,6 +19,8 @@ Opal::BuilderTask.new do |t|
 
 		# our main (entry point) file should be our spec_helper, which runs our tests
 		t.main = 'spec/spec_helper.rb'
+
+		t.stdlib = [:forwardable, :singleton]
 	end
 end
 
