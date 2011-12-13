@@ -1,7 +1,7 @@
 # incase opal-browser has dependencies
 gemspec
 
-gem 'opal', :git => 'git://github.com/adambeynon/opal.git', :branch => 'debugging'
+gem 'opal', :git => 'git://github.com/opal/opal.git'
 
 # added in 'test' build mode
 group :test do
