@@ -11,11 +11,9 @@
 module Browser
 
 class Location
-	attr_accessor_bridge `#@native`, :hash, :host, :hostname, :href, :pathname, :port, :protocol, :search
+	include Native
 
-	def initialize (native)
-		@native = native
-	end
+	attr_accessor_bridge :@native, :hash, :host, :hostname, :href, :pathname, :port, :protocol, :search
 
 	def assign (url)
 		`#@native.assign(#{url.to_s})`
@@ -31,10 +29,6 @@ class Location
 
 	def to_s
 		`#@native.toString()`
-	end
-
-	def to_native
-		@native = native
 	end
 end
 

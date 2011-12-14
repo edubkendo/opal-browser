@@ -11,6 +11,8 @@
 class Document
 
 class Event
+	include Native
+
 	Normalization = {
 		load: 'DOMContentLoaded'
 	}
@@ -19,20 +21,12 @@ class Event
 		Normalization[name.to_sym] || name.to_s
 	end
 
-	def initialiaze (native)
-		@native = native
-	end
-
 	def name
 		`#@native.eventName`
 	end
 
 	def data
 		`#@native.data`
-	end
-
-	def to_native
-		@native
 	end
 end
 

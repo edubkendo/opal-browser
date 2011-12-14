@@ -14,9 +14,7 @@ require 'opal/browser/navigator'
 module Browser
 
 class Window
-	def initialize (native)
-		@native = native
-	end
+	include Native
 
 	def document
     Document.new(`#@native.document`)
@@ -38,10 +36,6 @@ class Window
 
 	def navigator
 		Navigator.new(`#@native.navigator`) unless Opal.undefined?(`#@native.navigator`)
-	end
-
-	def to_native
-		@native
 	end
 end
 

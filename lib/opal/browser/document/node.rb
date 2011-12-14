@@ -11,6 +11,8 @@
 class Document
 
 module Node
+	include Native
+
 	def name
 		`#@native.nodeName`
 	end

@@ -11,9 +11,7 @@
 module Browser
 
 class Navigator
-	def initialize (native)
-		@native = native
-	end
+	include Native
 
 	def code
 		`#@native.appCodeName`
@@ -91,10 +89,6 @@ class Navigator
 		`#@native.javaEnabled()`
 	rescue
 		false
-	end
-
-	def to_native
-		@native = native
 	end
 end
 

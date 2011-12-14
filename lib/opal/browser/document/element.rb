@@ -13,10 +13,6 @@ module Browser; class Document
 class Element
 	include Node
 
-	def initialize (native)
-		@native = native
-	end
-
 	def children
 		Array(`#@native.children`).map { |e| Element.new(e) }
 	end
@@ -45,10 +41,6 @@ class Element
 
 	def inspect
 		"#<Document::Element(#{name}): #{children.inspect}>"
-	end
-
-	def to_native
-		@native
 	end
 end
 

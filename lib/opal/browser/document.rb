@@ -18,10 +18,6 @@ module Browser
 class Document
 	include Node
 
-	def initialize (native)
-		@native = native
-	end
-
 	def root
 		Element.new(`#@native.documentElement`)
 	end
@@ -44,10 +40,6 @@ class Document
 
 	def location
 		Location.new(`#@native.location`) unless Opal.undefined?(`#@native.location`)
-	end
-
-	def to_native
-		@native
 	end
 end
 
