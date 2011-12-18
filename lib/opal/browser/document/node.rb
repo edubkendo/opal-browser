@@ -36,14 +36,14 @@ module Node
 	def xpath (path)
 		result = []
 
-		`
+		%x{
 			var tmp = (#@native.ownerDocument || #@native.self).evaluate(
 				path, #@native, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
 			for (var i = 0; i < tmp.snapshotLength; i++) {
 				result.push(tmp.snapshotItem(i));
 			}
-		`
+		}
 
 		result.map { |e| Element.new(e) }
 	end
@@ -59,7 +59,7 @@ module Node
 	end
 
 	def fire (what, data, bubble = false)
-		`
+		%x{
 			var event = document.createEvent('HTMLEvents');
 
 			event.initEvent('dataavailable', bubble, true);
@@ -67,7 +67,7 @@ module Node
 			event.data      = data;
 			
 			return self.dispatchEvent(event);
-		`
+		}
 	end
 end
 

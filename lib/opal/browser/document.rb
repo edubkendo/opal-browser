@@ -29,13 +29,13 @@ class Document
 	end
 
 	def [] (what)
-		`
+		%x{
 			var result = #@native.getElementById(what);
 
 			if (result) {
 				return #{Element.new(`result`)};
 			}
-		`
+		}
 		
 		xpath(what).first || css(what).first
 	end

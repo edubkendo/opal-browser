@@ -10,15 +10,14 @@
 
 require 'opal/browser/location'
 require 'opal/browser/navigator'
+require 'opal/browser/document'
+
+require 'opal/browser/window/storage'
 
 module Browser
 
 class Window
 	include Native
-
-	def document
-    Document.new(`#@native.document`)
-	end
 
 	def puts (*what)
 		what.each {|what|
@@ -37,11 +36,17 @@ class Window
 	def navigator
 		Navigator.new(`#@native.navigator`) unless Opal.undefined?(`#@native.navigator`)
 	end
+
+	def document
+    Document.new(`#@native.document`)
+	end
+
+	def storage (name = :default)
+		Storage.new(to_native, name)
+	end
 end
 
 end
-
-require 'opal/browser/document'
 
 $window   = Window.new(`window`)
 $document = $window.document
