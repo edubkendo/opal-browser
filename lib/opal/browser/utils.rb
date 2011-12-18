@@ -8,16 +8,20 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-require 'forwardable'
-require 'opal/json'
+class String
+	def encodeURIComponent
+		`encodeURIComponent(self)`
+	end
 
-module Browser
-	def self.engine
-		`/MSIE|WebKit|Presto|Gecko/.exec(navigator.userAgent)[0]`.downcase.to_sym
-	rescue
-		:unknown
+	def encodeURI
+		`encodeURI(self)`
+	end
+
+	def decodeURIComponent
+		`decodeURIComponent(self)`
+	end
+
+	def decodeURI
+		`decodeURI(self)`
 	end
 end
-
-require 'opal/browser/utils'
-require 'opal/browser/window'

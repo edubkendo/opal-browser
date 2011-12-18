@@ -9,9 +9,11 @@
 #++
 
 require 'opal/browser/location'
+
 require 'opal/browser/document/event'
 require 'opal/browser/document/node'
 require 'opal/browser/document/element'
+require 'opal/browser/document/cookies'
 
 module Browser
 
@@ -40,6 +42,10 @@ class Document
 
 	def location
 		Location.new(`#@native.location`) unless Opal.undefined?(`#@native.location`)
+	end
+
+	def cookies
+		Cookies.new(to_native)
 	end
 end
 
