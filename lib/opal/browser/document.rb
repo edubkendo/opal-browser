@@ -45,7 +45,7 @@ class Document
 	end
 
 	def cookies
-		Cookies.new(to_native)
+		Cookies.new(to_native) unless Opal.undefined?(`#@native.cookie`)
 	end
 end
 

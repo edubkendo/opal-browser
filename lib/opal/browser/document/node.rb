@@ -13,6 +13,20 @@ class Document
 module Node
 	include Native
 
+	def == (other)
+		`#@native === #{other.to_native}`
+	end
+
+	def hash
+		%x{
+			if (#@native.$id) {
+				return #@native.$id;
+			}
+
+			return #@native.$id = rb_hash_yield++;
+		}
+	end
+
 	def name
 		`#@native.nodeName`
 	end
@@ -50,6 +64,10 @@ module Node
 
 	def css (path)
 		Array(`#@native.querySelectorAll(path)`).map { |e| Element.new(e) }
+	end
+
+	def search (what)
+		(xpath(what) + css(what)).uniq
 	end
 
 	def on (what, capture = false, &block)
