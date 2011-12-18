@@ -70,7 +70,7 @@ class Storage < Hash
 				self.element = #@window.document.createElement('link');
 				self.element.addBehavior('#default#userData');
 
-				#@window.document.getElementByTagName('head')[0].appendChild(self.element);
+				#@window.document.getElementsByTagName('head')[0].appendChild(self.element);
 
 				self.element.load(#{encoded_name});
 			}
