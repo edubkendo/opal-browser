@@ -13,6 +13,8 @@ require 'opal/browser/navigator'
 require 'opal/browser/document'
 
 require 'opal/browser/window/storage'
+require 'opal/browser/window/interval'
+require 'opal/browser/window/timeout'
 
 module Browser
 
@@ -44,6 +46,18 @@ class Window
 	def storage (name = :default)
 		Storage.new(to_native, name)
 	end
+
+	def every (time, &block)
+		Interval.new(to_native, time, &block)
+	end
+
+	def once (time, &block)
+		Timeout.new(to_native, time, &block)
+	end
+	
+	alias once_after once
+
+	alias after once
 end
 
 end
