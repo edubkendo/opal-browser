@@ -9,6 +9,7 @@
 #++
 
 require 'forwardable'
+require 'call-me/named'
 require 'opal/json'
 
 module Browser
