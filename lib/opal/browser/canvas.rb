@@ -26,6 +26,10 @@ class Canvas
 			def_delegators :@context, name unless respond_to? name
 		}
 	end
+
+	def to_data (type = undefined)
+		`#@element.toDataUrl(type)`
+	end
 end
 
 end

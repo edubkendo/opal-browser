@@ -74,24 +74,53 @@ Context.define '2d' do
 			end
 		end
 
-		attr_reader :context, :line, :text, :fill, :stroke, :alpha
+		class Shadow
+			attr_reader :context, :offset, :blur, :color
+
+			def initialize (context)
+				@context = context
+			end
+
+			def offset= (value)
+				`#{@context.to_native}.shadowOffsetX = #{value[:x]}`
+				`#{@context.to_native}.shadowOffsetY = #{value[:y]}`
+
+				@offset = value
+			end
+
+			def blur= (value)
+				`#{@context.to_native}.shadowBlur = #{@blur = value}`
+			end
+
+			def color= (value)
+				`#{@context.to_native}.shadowColor = #{@color = value}`
+			end
+		end
+
+		attr_reader :context, :line, :text, :image, :shadow, :fill, :stroke, :alpha, :composite_operation
 
 		def initialize (context)
 			@context = context
 			@line    = Line.new(context)
 			@text    = Text.new(context)
+			@image   = Image.new(context)
+			@shadow  = Shadow.new(context)
 		end
 
 		def fill= (value)
-			`#{@context.to_native}.fillStyle = #{@fill = value}`
+			`#{@context.to_native}.fillStyle = #{(@fill = value).to_native}`
 		end
 
 		def stroke= (value)
-			`#{@context.to_native}.strokeStyle = #{@stroke = value}`
+			`#{@context.to_native}.strokeStyle = #{(@stroke = value).to_native}`
 		end
 
 		def alpha= (value)
 			`#{@context.to_native}.globalAlpha = #{@alpha = value}`
+		end
+
+		def composite_operation= (value)
+			`#{@context.to_native}.globalCompositeOperation = #{@composite_operation = value}`
 		end
 	end
 
@@ -127,6 +156,92 @@ Context.define '2d' do
 		end
 	end
 
+	class Data
+		def self.create (context, width, height)
+			data = allocate
+
+			data.instance_eval {
+				@context = context
+				@x       = 0
+				@y       = 0
+				@width   = width
+				@height  = height
+
+				@native = `#{context.to_native}.createImageData(width, height)`
+			}
+
+			data
+		end
+
+		include Native
+
+		attr_reader :x, :y, :width, :height
+
+		def initialize (context, x, y, width, height)
+			@context = context
+			@x       = x
+			@y       = y
+			@width   = width
+			@height  = height
+
+			super(`#{@context.to_native}.getImageData(x, y, width, height)`)
+		end
+
+		def length
+			`#@native.length`
+		end
+
+		def [] (index)
+			`#@native.data[index]`
+		end
+
+		def []= (index, value)
+			`#@native.data[index] = value`
+		end
+
+		named :x, :y, :optional => 0 .. -1
+		def save (x = nil, y = nil)
+			x ||= 0
+			y ||= 0
+
+			`#{@context.to_native}.putImageData(#@native, x, y)`
+		end
+
+		named :context, :x, :y, :optional => 1 .. -1
+		def save_to (context, x = nil, y = nil)
+			x ||= 0
+			y ||= 0
+
+			`#{context.to_native}.putImageData(#@native, x, y)`
+		end
+
+		alias size length
+	end
+	
+	class Gradient
+		include Native
+
+		attr_reader :context
+
+		def initialize (context, *args, &block)
+			@context = context
+
+			super(case args.length
+				when 4 then `#{@context.to_native}.createLinearGradient.apply(self, args)`
+				when 6 then `#{@context.to_native}.createRadialGradient.apply(self, args)`
+				else raise ArgumentError, "don't know where to dispatch"
+			end)
+
+			instance_eval &block
+		end
+
+		def add (position, color)
+			`#{@context.to_native}.addColorStop(position, color)`
+
+			self
+		end
+	end
+
 	attr_reader :style, :text
 
 	def initialize (element)
@@ -136,6 +251,24 @@ Context.define '2d' do
 
 		@style = Style.new(self)
 		@text  = Text.new(self)
+	end
+
+	named :x, :y, :width, :height, :optional => 0 .. -1, :alias => { :w => :width, :h => :height }
+	def data (x = nil, y = nil, width = nil, height = nil)
+		x      ||= 0
+		y      ||= 0
+		width  ||= self.width
+		height ||= self.height
+
+		Data.new(self, x, y, width, height)
+	end
+
+	def pattern (image, type = :repeat)
+		`#@native.createPattern(#{Element(image).to_native}, type)`
+	end
+
+	def gradient (*args, &block)
+		Gradient.new(self, *args, &block)
 	end
 
 	named :x, :y, :width, :height, :optional => 0 .. -1, :alias => { :w => :width, :h => :height }
@@ -230,16 +363,16 @@ Context.define '2d' do
 	end
 
 	def draw_image (*args)
-		image = args.shift
+		image = Element(args.shift)
 
 		if args.first.is_a?(Hash)
 			source, destination = args
 
-			`#@native.drawImage(image, #{source[:x]}, #{source[:y]}, #{source[:width]}, #{source[:height]}, #{destination[:x]}, #{destination[:y]}, #{destination[:width]}, #{destination[:height]})`
+			`#@native.drawImage(#{image.to_native}, #{source[:x]}, #{source[:y]}, #{source[:width]}, #{source[:height]}, #{destination[:x]}, #{destination[:y]}, #{destination[:width]}, #{destination[:height]})`
 		else
 			x, y, width, height = args
 
-			`#@native.drawImage(image, x, y, #{width || `undefined`}, #{height || `undefined`})`
+			`#@native.drawImage(#{image.to_native}, x, y, #{width || `undefined`}, #{height || `undefined`})`
 		end
 
 		self
@@ -331,6 +464,14 @@ Context.define '2d' do
 		path &block if block
 
 		`#@native.stroke()`
+
+		self
+	end
+
+	def clip (&block)
+		path &block if block
+
+		`#@native.clip()`
 
 		self
 	end
