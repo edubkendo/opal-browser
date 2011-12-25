@@ -50,3 +50,13 @@ class Document
 end
 
 end
+
+module Kernel
+	def Document (what)
+		if Opal.object?(what)
+			what.is_a?(Browser::Document) ? what : Browser::Document.new(what.to_native)
+		else
+			Browser::Document.new(what)
+		end
+	end
+end

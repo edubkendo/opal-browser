@@ -66,6 +66,14 @@ $window   = Window.new(`window`)
 $document = $window.document
 
 module Kernel
+	def Window (what)
+		if Opal.object?(what)
+			what.is_a?(Browser::Window) ? what : Browser::Window.new(what.to_native)
+		else
+			Browser::Window.new(what)
+		end
+	end
+
 	def alert (text)
 		$window.alert(text)
 	end
