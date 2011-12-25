@@ -15,9 +15,12 @@ module Browser
 class Canvas
 	include SingleForwardable
 
+	attr_reader :element, :context, :type
+
 	def initialize (element, context = '2d')
 		@element = Element(element)
 		@context = Context[context].new(@element)
+		@type    = context.to_s.downcase
 
 		@context.methods.each {|name|
 			def_delegators :@context, name unless respond_to? name

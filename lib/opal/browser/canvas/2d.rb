@@ -11,12 +11,18 @@
 module Browser; class Canvas
 
 Context.define '2d' do
-	attr_accessor :style
+	attr_reader :style
 
 	def initialize (element)
 		super(element)
 
 		@native = `#@element.getContext('2d')`
+	end
+
+	def style= (style)
+		`#@native.fillStyle = #{@style = style}`
+
+		style
 	end
 
 	named :x, :y, :width, :height, :optional => 0 .. -1, :alias => { :w => :width, :h => :height }
