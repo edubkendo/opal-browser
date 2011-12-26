@@ -11,19 +11,21 @@
 module Browser; class Canvas
 
 Context.define '2d' do
-	class Style
+	class StyleObject
 		include Native
 
-		class Line
-			include Native
+		attr_reader :context
 
-			attr_reader :context, :width, :cap, :join, :miter_limit
+		def initialize (context)
+			@context = context
 
-			def initialize (context)
-				@context = context
+			super(@context.to_native)
+		end
+	end
 
-				super(@context.to_native)
-			end
+	class Style < StyleObject
+		class Line < StyleObject
+			attr_reader :width, :cap, :join, :miter_limit
 
 			def width= (value)
 				`#@native.lineWidth = #{@width = value}`
@@ -42,16 +44,8 @@ Context.define '2d' do
 			end
 		end
 
-		class Text
-			include Native
-
-			attr_reader :context, :font, :align, :baseline
-
-			def initialize (context)
-				@context = context
-
-				super(@context.to_native)
-			end
+		class Text < StyleObject
+			attr_reader :font, :align, :baseline
 
 			def font= (value)
 				`#@native.font = #{@font = value}`
@@ -66,16 +60,8 @@ Context.define '2d' do
 			end
 		end
 
-		class Image
-			include Native
-
-			attr_reader :context, :smooth
-
-			def initialize (context)
-				@context = context
-
-				super(@context.to_native)
-			end
+		class Image < StyleObject
+			attr_reader :smooth
 
 			alias smooth? smooth
 
@@ -88,16 +74,8 @@ Context.define '2d' do
 			end
 		end
 
-		class Shadow
-			include Native
-
-			attr_reader :context, :offset, :blur, :color
-
-			def initialize (context)
-				@context = context
-
-				super(@context.to_native)
-			end
+		class Shadow < StyleObject
+			attr_reader :offset, :blur, :color
 
 			def offset= (value)
 				`#@native.shadowOffsetX = #{value[:x]}`
@@ -115,17 +93,15 @@ Context.define '2d' do
 			end
 		end
 
-		attr_reader :context, :line, :text, :image, :shadow, :fill, :stroke, :alpha, :composite_operation
+		attr_reader :line, :text, :image, :shadow, :fill, :stroke, :alpha, :composite_operation
 
 		def initialize (context)
-			@context = context
+			super(context)
 
 			@line   = Line.new(context)
 			@text   = Text.new(context)
 			@image  = Image.new(context)
 			@shadow = Shadow.new(context)
-
-			super(@context.to_native)
 		end
 
 		def fill= (value)
