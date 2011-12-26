@@ -13,4 +13,5 @@ Gem::Specification.new {|s|
 	s.require_paths = ['lib']
 
 	s.add_dependency 'opal-json'
+	s.add_dependency 'call-me'
 }

@@ -12,88 +12,106 @@ module Browser; class Canvas
 
 Context.define '2d' do
 	class Style
+		include Native
+
 		class Line
+			include Native
+
 			attr_reader :context, :width, :cap, :join, :miter_limit
 
 			def initialize (context)
 				@context = context
+
+				super(@context.to_native)
 			end
 
 			def width= (value)
-				`#{@context.to_native}.lineWidth = #{@width = value}`
+				`#@native.lineWidth = #{@width = value}`
 			end
 
 			def cap= (value)
-				`#{@context.to_native}.lineCap = #{@cap = value}`
+				`#@native.lineCap = #{@cap = value}`
 			end
 
 			def join= (value)
-				`#{@context.to_native}.lineJoin = #{@join = value}`
+				`#@native.lineJoin = #{@join = value}`
 			end
 
 			def miter_limit= (value)
-				`#{@context.to_native}.miterLimit = #{@miter_limit = value}`
+				`#@native.miterLimit = #{@miter_limit = value}`
 			end
 		end
 
 		class Text
+			include Native
+
 			attr_reader :context, :font, :align, :baseline
 
 			def initialize (context)
 				@context = context
+
+				super(@context.to_native)
 			end
 
 			def font= (value)
-				`#{@context.to_native}.font = #{@font = value}`
+				`#@native.font = #{@font = value}`
 			end
 
 			def align= (value)
-				`#{@context.to_native}.textAlign = #{@align = value}`
+				`#@native.textAlign = #{@align = value}`
 			end
 
 			def baseline= (value)
-				`#{@context.to_native}.textBaseline = #{@baseline = value}`
+				`#@native.textBaseline = #{@baseline = value}`
 			end
 		end
 
 		class Image
-			attr_reader :context, :smooth
+			include Native
 
-			alias smooth? smooth
+			attr_reader :context, :smooth
 
 			def initialize (context)
 				@context = context
+
+				super(@context.to_native)
 			end
 
+			alias smooth? smooth
+
 			def smooth!
-				`#{@context.to_native}.mozImageSmoothingEnabled = #{@smooth = true}`
+				`#@native.mozImageSmoothingEnabled = #{@smooth = true}`
 			end
 
 			def no_smooth!
-				`#{@context.to_native}.mozImageSmoothingEnabled = #{@smooth = false}`
+				`#@native.mozImageSmoothingEnabled = #{@smooth = false}`
 			end
 		end
 
 		class Shadow
+			include Native
+
 			attr_reader :context, :offset, :blur, :color
 
 			def initialize (context)
 				@context = context
+
+				super(@context.to_native)
 			end
 
 			def offset= (value)
-				`#{@context.to_native}.shadowOffsetX = #{value[:x]}`
-				`#{@context.to_native}.shadowOffsetY = #{value[:y]}`
+				`#@native.shadowOffsetX = #{value[:x]}`
+				`#@native.shadowOffsetY = #{value[:y]}`
 
 				@offset = value
 			end
 
 			def blur= (value)
-				`#{@context.to_native}.shadowBlur = #{@blur = value}`
+				`#@native.shadowBlur = #{@blur = value}`
 			end
 
 			def color= (value)
-				`#{@context.to_native}.shadowColor = #{@color = value}`
+				`#@native.shadowColor = #{@color = value}`
 			end
 		end
 
@@ -101,26 +119,29 @@ Context.define '2d' do
 
 		def initialize (context)
 			@context = context
-			@line    = Line.new(context)
-			@text    = Text.new(context)
-			@image   = Image.new(context)
-			@shadow  = Shadow.new(context)
+
+			@line   = Line.new(context)
+			@text   = Text.new(context)
+			@image  = Image.new(context)
+			@shadow = Shadow.new(context)
+
+			super(@context.to_native)
 		end
 
 		def fill= (value)
-			`#{@context.to_native}.fillStyle = #{(@fill = value).to_native}`
+			`#@native.fillStyle = #{(@fill = value).to_native}`
 		end
 
 		def stroke= (value)
-			`#{@context.to_native}.strokeStyle = #{(@stroke = value).to_native}`
+			`#@native.strokeStyle = #{(@stroke = value).to_native}`
 		end
 
 		def alpha= (value)
-			`#{@context.to_native}.globalAlpha = #{@alpha = value}`
+			`#@native.globalAlpha = #{@alpha = value}`
 		end
 
 		def composite_operation= (value)
-			`#{@context.to_native}.globalCompositeOperation = #{@composite_operation = value}`
+			`#@native.globalCompositeOperation = #{@composite_operation = value}`
 		end
 	end
 
@@ -132,7 +153,7 @@ Context.define '2d' do
 		end
 
 		def measure (text)
-			`#{@context.to_native}.measureText(text)`
+			`#@native.measureText(text)`
 		end
 
 		named :text, :x, :y, :max_width, :optional => 1 .. -1
@@ -140,7 +161,7 @@ Context.define '2d' do
 			x ||= 0
 			y ||= 0
 
-			`#{@context.to_native}.fillText(text, x, y, max_width)`
+			`#@native.fillText(text, x, y, max_width)`
 
 			@context
 		end
@@ -150,7 +171,7 @@ Context.define '2d' do
 			x ||= 0
 			y ||= 0
 
-			`#{@context.to_native}.strokeText(text, x, y, max_width)`
+			`#@native.strokeText(text, x, y, max_width)`
 
 			@context
 		end
