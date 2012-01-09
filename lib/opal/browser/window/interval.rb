@@ -20,7 +20,7 @@ class Interval
 		@every  = time
 		@block  = block
 
-		super(`#@window.setInterval(#{block.to_native}, time * 1000`)
+		super(`#@window.setInterval(#{block.to_native}, time * 1000)`)
 	end
 
 	def abort

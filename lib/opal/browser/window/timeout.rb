@@ -20,7 +20,7 @@ class Timeout
 		@after  = time
 		@block  = block
 
-		super(`#@window.setTimeout(#{block.to_native}, time * 1000`)
+		super(`#@window.setTimeout(#{block.to_native}, time * 1000)`)
 	end
 
 	def abort

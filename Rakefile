@@ -11,4 +11,9 @@ task :browser do
 	Opal::Builder.new('lib', join: 'build/opal-browser.js').build
 end
 
+desc 'Build latest opal-browser ready for testing in build/'
+task :test do
+	Opal::Builder.new(['lib', 'spec'], debug: true, join: 'build/opal-browser.test.js').build
+end
+
 task :default => :browser
