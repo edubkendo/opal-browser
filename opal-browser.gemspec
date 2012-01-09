@@ -1,8 +1,8 @@
 Gem::Specification.new {|s|
 	s.name         = 'opal-browser'
-	s.version      = '0.0.1'
-	s.author       = ['meh.', 'Adam Beynon']
-	s.email        = ['meh@paranoici.org', 'adam@adambeynon.com']
+	s.version      = '0.0.1a1'
+	s.author       = 'meh.'
+	s.email        = 'meh@paranoici.org'
 	s.homepage     = 'http://github.com/opal/opal-browser'
 	s.platform     = Gem::Platform::RUBY
 	s.summary      = 'Opal support for browser capabilities.'

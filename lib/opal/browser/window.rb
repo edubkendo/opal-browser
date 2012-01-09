@@ -12,7 +12,6 @@ require 'opal/browser/location'
 require 'opal/browser/navigator'
 require 'opal/browser/document'
 
-require 'opal/browser/window/storage'
 require 'opal/browser/window/interval'
 require 'opal/browser/window/timeout'
 
@@ -41,10 +40,6 @@ class Window
 
 	def document
     Document.new(`#@native.document`)
-	end
-
-	def storage (name = :default)
-		Storage.new(to_native, name)
 	end
 
 	def every (time, &block)
