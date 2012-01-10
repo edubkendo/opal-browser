@@ -4,14 +4,14 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 	<title>Spec_runner</title>
-</head>
-
-<body>
-	<div id="test"></div>
 
 	<script src="../build/opal.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../build/opal-json.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../build/opal-spec.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../build/opal-browser.test.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body onload="opal.main('/spec/spec_runner.rb')">
+	<div id="test"></div>
 </body>
 </html>

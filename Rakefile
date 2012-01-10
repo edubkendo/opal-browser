@@ -3,7 +3,7 @@ require 'opal'
 
 desc 'Build specified dependencies into build/'
 task :dependencies do
-	Opal::DependencyBuilder.new(dependencies: %w[call-me opal-spec], out: 'build').build
+	Opal::DependencyBuilder.new(gems: %w[opal-spec], opal: true, out: 'build').build
 end
 
 desc 'Build latest opal-browser to build/'
