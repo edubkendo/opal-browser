@@ -12,7 +12,7 @@ module Browser; module HTTP
 
 class Parameters < Hash
 	def to_str
-		to_a.map { |a| a.map(&:encodeURIComponent).join(?=) }.join(?&)
+		to_a.map { |a| a.map(&:encodeURIComponent).join('=') }.join('&')
 	end
 end
 

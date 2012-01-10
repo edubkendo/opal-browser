@@ -10,6 +10,8 @@
 
 module Browser
 
+require 'typed_array'
+
 require 'opal/browser/http/headers'
 require 'opal/browser/http/parameters'
 require 'opal/browser/http/request'

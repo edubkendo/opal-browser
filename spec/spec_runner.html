@@ -5,13 +5,14 @@
 
 	<title>Spec_runner</title>
 
-	<script src="../build/opal.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../build/opal-json.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../build/opal-spec.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../build/opal.debug.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../build/opal-forwardable.debug.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../build/opal-native.debug.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../build/opal-spec.debug.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../build/opal-browser.test.js" type="text/javascript" charset="utf-8"></script>
 </head>
 
-<body onload="opal.main('/spec/spec_runner.rb')">
+<body onload="opal.main('/spec/spec_helper.rb')">
 	<div id="test"></div>
 </body>
 </html>

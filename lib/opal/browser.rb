@@ -9,7 +9,8 @@
 #++
 
 require 'forwardable'
-require 'opal/json'
+require 'native'
+require 'json'
 
 module Browser
 	def self.engine
