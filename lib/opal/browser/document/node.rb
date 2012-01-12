@@ -8,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-class Document
+module Browser; class Document
 
 module Node
 	include Native
@@ -89,4 +89,4 @@ module Node
 	end
 end
 
-end
+end; end

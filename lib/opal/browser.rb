@@ -10,7 +10,7 @@
 
 require 'forwardable'
 require 'native'
-require 'json'
+#require 'json'
 
 module Browser
 	def self.engine
