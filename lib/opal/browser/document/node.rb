@@ -51,7 +51,7 @@ module Node
 		result = []
 
 		%x{
-			var tmp = (#@native.ownerDocument || #@native.self).evaluate(
+			var tmp = (#@native.ownerDocument || #@native).evaluate(
 				path, #@native, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
 			for (var i = 0; i < tmp.snapshotLength; i++) {

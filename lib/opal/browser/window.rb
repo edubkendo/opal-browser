@@ -39,7 +39,7 @@ class Window
 	end
 
 	def document
-    Document.new(`#@native.document`)
+		Document.new(`#@native.document`)
 	end
 
 	def every (time, &block)
@@ -57,7 +57,7 @@ end
 
 end
 
-$window   = Window.new(`window`)
+$window   = Browser::Window.new(`window`)
 $document = $window.document
 
 module Kernel
