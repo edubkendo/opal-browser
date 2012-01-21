@@ -12,8 +12,7 @@ module Browser; module HTTP
 
 class Request
 	def self.open (method, url, &block)
-		request = new
-		request.instance_eval &block
+		request = new &block
 
 		request.open(method, url)
 		request.send
@@ -24,8 +23,6 @@ class Request
 	attr_reader   :data, :headers
 	attr_accessor :method, :url, :asynchronous, :user, :password
 
-	alias asynchronous? asynchronous
-
 	def initialize (&block)
 		super(`new XMLHttpRequest()`)
 
@@ -33,10 +30,24 @@ class Request
 
 		@method       = :GET
 		@asynchronous = true
+
+		instance_eval &block
 	end
 
+	def asynchronous?; @asynchronous;  end
+	def synchronous?;  !@asynchronous; end
+	
+	def asynchronous!; @asynchronous = true;  end
+	def synchronous!;  @asynchronous = false; end
+
 	def binary?; @binary; end
-	def binary!; @binary = true; end
+	def binary!
+		unless required? 'typed-array'
+			raise NotImplementedError, 'you have to require typed-array to work on binary files'
+		end
+
+		@binary = true
+	end
 
 	def opened?; @opened; end
 	def opened!; @opened = true; end
@@ -63,7 +74,7 @@ class Request
 	def send (data = nil)
 		raise 'the request has not been opened' unless opened?
 
-		return if sent?
+		raise 'the request has already been sent' if sent?
 
 		@headers.each {|name, value|
 			`#@native.setRequestHeader(#{name.to_str}, #{value.to_str})`
@@ -71,7 +82,7 @@ class Request
 
 		`#@native.responseType = 'arraybuffer'` if binary?
 
-		`#@native.send(#{Parameters[data || @parameters].to_str})`
+		`#@native.send(#{data || @parameters ? Parameters[data || @parameters].to_str : `null`})`
 
 		sent!
 

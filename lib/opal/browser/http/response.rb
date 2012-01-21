@@ -25,6 +25,22 @@ class Response
 		@headers ||= Headers.parse(`#@native.getAllResponseHeaders()`)
 	end
 
+	def status
+		Struct.new(:code, :text).new(`#@native.status || nil`, `#@native.statusText || nil`)
+	end
+
+	def success?
+		if code = status.code
+			code >= 200 && code < 300 || code == 304
+		else
+			false
+		end
+	end
+
+	def failure?
+		!success?
+	end
+
 	def text
 		%x{
 			var result = #@native.responseText;
@@ -50,6 +66,8 @@ class Response
 	end
 
 	def binary
+		return unless request.binary?
+
 		%x{
 			var result = #@native.response;
 

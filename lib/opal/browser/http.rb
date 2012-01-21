@@ -8,14 +8,14 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-module Browser
-
-require 'typed_array'
+require 'require/extra'
 
 require 'opal/browser/http/headers'
 require 'opal/browser/http/parameters'
 require 'opal/browser/http/request'
 require 'opal/browser/http/response'
+
+module Browser
 
 module HTTP
 	def self.get (url, &block)
@@ -32,3 +32,5 @@ module HTTP
 end
 
 end
+
+require 'opal/browser/http/file'

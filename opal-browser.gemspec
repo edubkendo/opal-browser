@@ -16,7 +16,7 @@ Gem::Specification.new {|s|
 
 	s.add_dependency 'opal-native'
 	s.add_dependency 'opal-forwardable'
-#	s.add_dependency 'opal-json'
+	s.add_dependency 'opal-json'
 
-	s.add_development_dependency 'opal-spec'
+	s.add_dependency 'opal-spec'
 }
