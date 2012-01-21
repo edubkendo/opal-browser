@@ -18,11 +18,11 @@ class Request
 		request.send
 	end
 
-	DefaultHeaders = Headers[
+	DefaultHeaders = Headers[{
 		'X-Requested-With' => 'XMLHttpRequest',
-		'X-Opal-Version'   => Opal::VERSION,
+#		'X-Opal-Version'   => Opal::VERSION,
 		'Accept'           => 'text/javascript, text/html, application/xml, text/xml, */*'
-	]
+	}]
 
 	include Native
 
@@ -122,7 +122,7 @@ class Request
 		raise 'the request has already been sent' if sent?
 
 		@headers.each {|name, value|
-			`#@native.setRequestHeader(#{name.to_str}, #{value.to_str})`
+			`#@native.setRequestHeader(#{name.to_s}, #{value.to_s})`
 		}
 
 		if content_type
