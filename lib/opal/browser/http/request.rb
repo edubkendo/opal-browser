@@ -18,18 +18,25 @@ class Request
 		request.send
 	end
 
+	DefaultHeaders = Headers[
+		'X-Requested-With' => 'XMLHttpRequest',
+		'X-Opal-Version'   => Opal::VERSION,
+		'Accept'           => 'text/javascript, text/html, application/xml, text/xml, */*'
+	]
+
 	include Native
 
-	attr_reader   :data, :headers
-	attr_accessor :method, :url, :asynchronous, :user, :password
+	attr_reader   :data, :headers, :response
+	attr_accessor :method, :url, :asynchronous, :user, :password, :mime_type, :content_type, :encoding
 
 	def initialize (&block)
 		super(`new XMLHttpRequest()`)
 
-		@headers = Headers.new
-
-		@method       = :GET
+		@headers      = Headers[DefaultHeaders]
+		@method       = :get
 		@asynchronous = true
+		@cachable     = true
+		@callbacks    = {}
 
 		instance_eval &block
 	end
@@ -40,20 +47,48 @@ class Request
 	def asynchronous!; @asynchronous = true;  end
 	def synchronous!;  @asynchronous = false; end
 
-	def binary?; @binary; end
-	def binary!
-		unless required? 'typed-array'
-			raise NotImplementedError, 'you have to require typed-array to work on binary files'
-		end
+	def binary?; @binary;        end
+	def binary!; @binary = true; end
 
-		@binary = true
-	end
+	def cachable?; @cachable;         end
+	def no_cache!; @cachable = false; end
 
-	def opened?; @opened; end
+	def opened?; @opened;        end
 	def opened!; @opened = true; end
 
-	def sent?; @sent; end
+	def sent?; @sent;        end
 	def sent!; @sent = true; end
+
+	def completed?; @completed;        end
+	def completed!; @completed = true; end
+
+	def on (what, &block)
+		@callbacks[what] = block
+	end
+
+	def callback
+		proc {|event|
+			state = %w[uninitialized loading loaded interactive complete][`#@native.readyState`]
+
+			begin
+				if state == :complete
+					completed!
+
+					@callbacks[response.status.code].(response) if @callbacks[response.status.code]
+					
+					if response.success?
+						@callbacks[:success].(response) if @callbacks[:success]
+					else
+						@callbacks[:failure].(response) if @callbacks[:failure]
+					end
+				end
+
+				@callbacks[state].(response) if @callbacks[state]
+			rescue Exception => e
+				@callbacks[:exception].(request, state, e) if @callbacks[:exception]
+			end
+		}.to_native
+	end
 
 	def open (method = nil, url = nil, asynchronous = nil, user = nil, password = nil)
 		raise 'the request has already been opened' if opened?
@@ -64,9 +99,19 @@ class Request
 		@user         = user         if user
 		@password     = password     if password
 
-		`#@native.open(#{@method.to_s}, #{@url.to_s}, #{@asynchronous.to_native}, #{@user.to_native}, #{@password.to_native})`
+		url = @url
+
+		unless cachable?
+			url += (url.include?('?') ? '&' : '?') + rand.to_s
+		end
+
+		`#@native.open(#{@method.upcase}, #{url}, #{@asynchronous.to_native}, #{@user.to_native}, #{@password.to_native})`
 
 		opened!
+
+		unless @callbacks.empty?
+			`#@native.onreadystatechange = #{callback}`
+		end
 
 		self
 	end
@@ -80,13 +125,30 @@ class Request
 			`#@native.setRequestHeader(#{name.to_str}, #{value.to_str})`
 		}
 
-		`#@native.responseType = 'arraybuffer'` if binary?
+		if content_type
+			header  = content_type
+			header += "; charset=#{encoding}" if encoding
+
+			`#@native.setRequestHeader('Content-Type', header)`
+		end
+
+		if binary?
+			if required? 'typed-array'
+				`#@native.responseType = 'arraybuffer'`
+			else
+				`#@native.overrideMimeType('text/plain; charset=x-user-defined')`
+			end
+		end
+
+		if mime_type && !binary?
+			`#@native.overrideMimeType(#@mime_type)`
+		end
 
 		`#@native.send(#{data || @parameters ? Parameters[data || @parameters].to_str : `null`})`
 
 		sent!
 
-		Response.new(self)
+		@response = Response.new(self)
 	end
 
 	def abort

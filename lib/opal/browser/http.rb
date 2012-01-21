@@ -10,6 +10,7 @@
 
 require 'require/extra'
 
+require 'opal/browser/http/binary'
 require 'opal/browser/http/headers'
 require 'opal/browser/http/parameters'
 require 'opal/browser/http/request'
@@ -19,15 +20,15 @@ module Browser
 
 module HTTP
 	def self.get (url, &block)
-		Request.open('GET', url, &block)
+		Request.open(:get, url, &block)
 	end
 
 	def self.head (url, &block)
-		Request.open('HEAD', url, &block)
+		Request.open(:head, url, &block)
 	end
 
 	def self.post (url, &block)
-		Request.open('POST', url, &block)
+		Request.open(:post, url, &block)
 	end
 end
 

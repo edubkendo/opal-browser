@@ -53,10 +53,6 @@ end
 
 module Kernel
 	def Document (what)
-		if Opal.object?(what)
-			what.is_a?(Browser::Document) ? what : Browser::Document.new(what.to_native)
-		else
-			Browser::Document.new(what)
-		end
+		Browser::Document.new(Native(what).to_native)
 	end
 end

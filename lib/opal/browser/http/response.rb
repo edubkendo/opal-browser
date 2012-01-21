@@ -60,23 +60,29 @@ class Response
 			if (!result) {
 				return nil;
 			}
-
-			return #{Document(`result`)};
 		}
+
+		Document(`result`)
 	end
 
 	def binary
 		return unless request.binary?
 
-		%x{
-			var result = #@native.response;
+		if required? 'typed-array'
+			%x{
+				var result = #@native.response;
 
-			if (!result) {
-				return nil;
+				if (!result) {
+					return nil;
+				}
 			}
 
-			return #{Buffer.from_native(`result`)};
-		}
+			Binary.new(Buffer.from_native(`result`))
+		else
+			return unless text
+
+			Binary.new(text)
+		end
 	end
 end
 
