@@ -413,7 +413,9 @@ class Node
 				callbacks[what].each {|event, namespaces|
 					namespaces.each {|name, callbacks|
 						callbacks.reject! {|callback|
-							namespace == callback
+							if namespace == callback
+								`#@native.removeEventListener(what, callback)`; true
+							end
 						}
 					}
 				}
@@ -425,7 +427,9 @@ class Node
 				callbacks[what].each {|event, namespaces|
 					namespaces.each {|name, callbacks|
 						callbacks.reject! {|callback|
-							what == callback
+							if what == callback
+								`#@native.removeEventListener(what, callback)`; true
+							end
 						}
 					}
 				}
@@ -434,7 +438,13 @@ class Node
 
 				callbacks.each {|event, namespaces|
 					namespaces.each {|name, callbacks|
-						callbacks.clear if what == namespace
+						if what == name
+							callbacks.each {|callback|
+								`#@native.removeEventListener(what, callback)`
+							}
+
+							callbacks.clear
+						end
 					}
 				}
 			end

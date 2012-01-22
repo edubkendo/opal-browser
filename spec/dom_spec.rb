@@ -13,8 +13,6 @@ describe Browser::DOM do
 		describe '#xpath' do
 			it 'should find the test div' do
 				$document.xpath('//div[@id="test"]').tap {|a|
-					`console.log(a)`
-					`window.a = a`
 					a.length.should == 1
 					
 					a.first.should == @test
