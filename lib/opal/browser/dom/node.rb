@@ -24,10 +24,20 @@ class Node
 	DOCUMENT_FRAGMENT_NODE      = 11
 	NOTATION_NODE               = 12
 
-	def self.from_native (native)
+	def self.new (*)
+		raise ArgumentError, 'cannot instantiate a non derived Node object' if self == Node
+
+		super
+	end
+
+	def self.from_native (value)
 		@classes ||= [nil, Element, Attribute, Text, CDATA, nil, nil, nil, Comment, Document]
 
-		@classes[`native.nodeType`].new(native)
+		if klass = @classes[`value.nodeType`]
+			klass.new(value)
+		else
+			raise ArgumentError, 'cannot instantiate a non derived Node object'
+		end
 	end
 
 	include Native
@@ -45,7 +55,7 @@ class Node
 	end
 
 	def == (other)
-		`#@native === #{Native(other).to_native}`
+		`#@native === #{Native.normalize(other)}`
 	end
 
 	def / (*paths)
@@ -78,7 +88,7 @@ class Node
 				add_child(node)
 			}
 		else
-			`#@native.appendChild(#{Native(node).to_native})`
+			`#@native.appendChild(#{Native.normalize(node)})`
 		end
 	end
 
@@ -169,7 +179,7 @@ class Node
 	end
 
 	def children
-		NodeSet.new(document, Array(`#@native.children`))
+		NodeSet.new(document, Array(`#@native.childNodes`))
 	end
 
 	def children= (node)
@@ -293,7 +303,7 @@ class Node
 	end
 
 	def parent= (node)
-		`#@native.parentNode = #{Native(node).to_native}`
+		`#@native.parentNode = #{Native.normalize(node)}`
 	end
 
 	def parse (text, options = {})
@@ -330,7 +340,7 @@ class Node
 
 	# TODO: implement for NodeSet
 	def replace (node)
-		`#@native.parentNode.replaceChild(#@native, #{Native(node).to_native})`
+		`#@native.parentNode.replaceChild(#@native, #{Native.normalize(node)})`
 
 		node
 	end
@@ -381,7 +391,7 @@ class Node
 		callback = `function (event) {
 			event = #{Event.from_native(`event`)};
 
-			#{DOM(`this`).instance_exec `event`, &block};
+			#{Kernel.DOM(`this`).instance_exec `event`, &block};
 
 			return #{`event`.stopped?};
 		}`

@@ -1,6 +1,10 @@
 require File.expand_path('../spec_helper', __FILE__)
 
 describe Browser::DOM do
+	it 'parses XML properly' do
+		DOM('<a></a>').root.name.should == 'a'
+	end
+
 	describe Browser::DOM::Node do
 		before do
 			@test = DOM(`document.getElementById('test')`)

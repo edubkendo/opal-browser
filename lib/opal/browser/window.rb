@@ -34,7 +34,7 @@ class Window
 	end
 
 	def document
-		DOM::Document.new(`#@native.document`)
+		DOM(`#@native.document`)
 	end
 
 	def every (time, &block)
@@ -57,7 +57,7 @@ $document = $window.document
 
 module Kernel
 	def Window (what)
-		Browser::Window.new(Native(what).to_native)
+		Browser::Window.new(Native.normalize(what))
 	end
 
 	def alert (text)

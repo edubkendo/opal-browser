@@ -1,7 +1,7 @@
 require 'browser'
 
 $document['a'].on :click do |e|
-	alert self.text
+	alert text
 end
 
 $document['a'].on :hover do |e|

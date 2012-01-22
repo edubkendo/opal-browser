@@ -23,6 +23,23 @@ require 'opal/browser/dom/event'
 
 module Kernel
 	def DOM (what)
-		Browser::DOM::Node.from_native(Native(what).to_native)
+		if String === what
+			%x{
+				var doc;
+
+				if (window.DOMParser) {
+					doc = new DOMParser().parseFromString(what, 'text/xml');
+				}
+				else {
+					doc       = new ActiveXObject('Microsoft.XMLDOM');
+					doc.async = 'false';
+					doc.loadXML(what);
+				}
+			}
+
+			DOM(`doc`)
+		else
+			Browser::DOM::Node.from_native(Native.normalize(what))
+		end
 	end
 end
