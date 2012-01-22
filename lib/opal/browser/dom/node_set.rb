@@ -20,6 +20,14 @@ class NodeSet
 		@internal = list
 	end
 
+	Enumerable.instance_methods.each {|name|
+		define_method name do
+			result = super
+
+			Array === result ? NodeSet.new(document, result) : result
+		end
+	}
+
 	def & (other)
 		NodeSet.new(document, to_ary & other.to_ary)
 	end
@@ -84,10 +92,14 @@ class NodeSet
 		result = NodeSet.new(document)
 
 		each { |n| result.concat(n.children) }
+
+		result
 	end
 
 	def concat (other)
 		@internal.concat(other.to_ary)
+
+		self
 	end
 
 	def css (*paths)
@@ -102,8 +114,8 @@ class NodeSet
 		NodeSet.new(document, to_ary.dup)
 	end
 
-	def each (&block)
-		@internal.each { |node| block.call(node) }
+	def each
+		@internal.each { |n| yield n }
 
 		self
 	end
@@ -113,11 +125,11 @@ class NodeSet
 	end
 
 	def filter (expression)
-		@internal.select { |node| node.matches?(expression) }
+		NodeSet.new(document, @internal.select { |node| node.matches?(expression) })
 	end
 
-	def first (n = nil)
-		@internal.first(n)
+	def first (*args)
+		@internal.first(*args)
 	end
 
 	def include? (node)
@@ -136,8 +148,8 @@ class NodeSet
 		map { |n| n.inner_text }.join
 	end
 
-	def last
-		@internal.last
+	def last (*args)
+		@internal.last(*args)
 	end
 
 	def length
@@ -165,7 +177,7 @@ class NodeSet
 	end
 
 	def reverse
-		@internal.reverse
+		NodeSet.new(document, @internal.reverse)
 	end
 
 	def search (*what)
@@ -187,7 +199,7 @@ class NodeSet
 	end
 
 	def text
-		map { |n| n.text }.join
+		to_a.map { |n| n.text }.join
 	end
 
 	def to_a
@@ -195,6 +207,20 @@ class NodeSet
 	end
 
 	alias to_ary to_a
+
+	# event related stuff
+
+	def on (*args, &block)
+		each { |n| n.on(*args, &block) }
+	end
+
+	def avoid (*args)
+		each { |n| n.avoid(*args) }
+	end
+
+	def fire (*args)
+		each { |n| n.fire(*args) }
+	end
 end
 
 end; end

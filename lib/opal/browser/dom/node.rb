@@ -199,11 +199,11 @@ class Node
 	end
 
 	def css (path)
-		Array(`#@native.querySelectorAll(path)`).map { |e| DOM(e) }
+		NodeSet.new(document, Array(`#@native.querySelectorAll(path)`).map { |e| DOM(e) })
 	end
 
 	def document
-		Document.new(`#@native.ownerDocument`)
+		DOM(`#@native.ownerDocument`)
 	end
 
 	def each
@@ -346,7 +346,9 @@ class Node
 	end
 
 	def search (*what)
-		what.map { |what| result.push << xpath(what) << css(what) }.flatten.uniq
+		NodeSet.new(document, what.map {|what|
+			xpath(what).to_a.concat(css(what).to_a)
+		}.flatten.uniq)
 	end
 
 	alias set_attribute []=
@@ -375,11 +377,11 @@ class Node
 				path, #@native, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
 			for (var i = 0, length = tmp.snapshotLength; i < length; i++) {
-				result.push(tmp.snapshotItem(i));
+				result.push(#{DOM(`tmp.snapshotItem(i)`)});
 			}
 		}
 
-		result.map { |e| DOM(e) }
+		NodeSet.new(document, result)
 	end
 
 	# event related stuff

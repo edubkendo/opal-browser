@@ -31,6 +31,10 @@ class Document < Node
 		Cookies.new(to_native) #if defined? `#@native.cookie`
 	end
 
+	def document
+		self
+	end
+
 	def inspect
 		"#<DOM::Document: #{children.inspect}>"
 	end
