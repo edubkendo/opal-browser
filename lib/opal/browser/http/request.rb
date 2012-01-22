@@ -35,7 +35,11 @@ class Request
 		@headers      = Headers[DefaultHeaders]
 		@method       = :get
 		@asynchronous = true
+		@binary       = false
 		@cachable     = true
+		@opened       = false
+		@sent         = false
+		@completed    = false
 		@callbacks    = {}
 
 		instance_eval &block

@@ -1,9 +1,9 @@
 require 'browser'
 
 $document['a'].on :click do |e|
-	alert e
+	alert self.text
 end
 
-$document['a'].on :hover do |element, event|
-	`window.event = event`
+$document['a'].on :hover do |e|
+	`window.event = e`
 end

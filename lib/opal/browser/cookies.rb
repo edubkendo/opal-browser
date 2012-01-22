@@ -8,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-module Browser; class Document
+module Browser
 
 class Cookies
 	include Enumerable
@@ -86,4 +86,4 @@ protected
 	end
 end
 
-end; end
+end

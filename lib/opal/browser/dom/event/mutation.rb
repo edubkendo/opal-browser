@@ -8,30 +8,28 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-module Browser; class Document; class Event
+module Browser; module DOM; class Event
 
-class Keyboard < Event
-	def alt?
-		`#@native.altKey`
+class Mutation < Event
+	def change
+		%w[_ modification addition removal][`#@native.attrChange`]
 	end
 
-	def ctrl?
-		`#@native.ctrlKey`
+	def name
+		`#@native.attrName`
 	end
 
-	def meta?
-		`#@native.metaKey`
+	def new
+		`#@native.newValue`
 	end
 
-	def shift?
-		`#@native.shiftKey`
+	def old
+		`#@native.prevValue`
 	end
 
-	def code
-		`#@native.keyCode || #@native.which`
+	def node
+		`#@native.relatedNode`
 	end
-
-	alias to_i code
 end
 
 end; end; end

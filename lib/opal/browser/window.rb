@@ -10,7 +10,8 @@
 
 require 'opal/browser/location'
 require 'opal/browser/navigator'
-require 'opal/browser/document'
+require 'opal/browser/cookies'
+require 'opal/browser/dom'
 
 require 'opal/browser/window/interval'
 require 'opal/browser/window/timeout'
@@ -19,12 +20,6 @@ module Browser
 
 class Window
 	include Native
-
-	def puts (*what)
-		what.each {|what|
-			`#@native.console.log(what);`
-		}
-	end
 
 	def alert (text)
 		`#@native.alert(text)`
@@ -39,7 +34,7 @@ class Window
 	end
 
 	def document
-		Document.new(`#@native.document`)
+		DOM::Document.new(`#@native.document`)
 	end
 
 	def every (time, &block)
@@ -62,14 +57,14 @@ $document = $window.document
 
 module Kernel
 	def Window (what)
-		if Opal.object?(what)
-			what.is_a?(Browser::Window) ? what : Browser::Window.new(what.to_native)
-		else
-			Browser::Window.new(what)
-		end
+		Browser::Window.new(Native(what).to_native)
 	end
 
 	def alert (text)
 		$window.alert(text)
+	end
+
+	def log (what)
+		`#{$window.to_native}.console.log(what)`
 	end
 end

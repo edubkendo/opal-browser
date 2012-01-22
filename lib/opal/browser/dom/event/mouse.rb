@@ -8,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-module Browser; class Document; class Event
+module Browser; module DOM; class Event
 
 class Mouse < Event
 	Position = Struct.new(:x, :y)
@@ -70,11 +70,11 @@ class Mouse < Event
 	end
 
 	def from
-		Element(`#@native.fromElement`)
+		DOM(`#@native.fromElement`)
 	end
 
 	def to
-		Element(`#@native.toElement`)
+		DOM(`#@native.toElement`)
 	end
 end
 

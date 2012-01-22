@@ -8,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-module Browser; class Document
+module Browser; module DOM
 
 class Event
 	Normalization = {
@@ -20,7 +20,9 @@ class Event
 		Normalization[name] || name
 	end
 
-	def self.[] (value)
+	include Native
+
+	def self.from_native (value)
 		%x{
 			if (value instanceof MouseEvent) {
 				return #{Mouse.new(value)};
@@ -37,8 +39,6 @@ class Event
 		}
 	end
 
-	include Native
-
 	def name
 		`#@native.eventName`
 	end
@@ -46,10 +46,16 @@ class Event
 	def data
 		`#@native.data`
 	end
+
+	def stopped?; !!@stopped; end
+
+	def stop!
+		@stopped = true
+	end
 end
 
 end; end
 
-require 'opal/browser/document/event/mouse'
-require 'opal/browser/document/event/keyboard'
-require 'opal/browser/document/event/mutation'
+require 'opal/browser/dom/event/mouse'
+require 'opal/browser/dom/event/keyboard'
+require 'opal/browser/dom/event/mutation'
