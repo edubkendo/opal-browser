@@ -8,18 +8,36 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
-class Document
+module Browser; class Document
 
 class Event
-	include Native
-
 	Normalization = {
-		load: 'DOMContentLoaded'
+		load:  'DOMContentLoaded',
+		hover: 'mouseover'
 	}
 
 	def self.normalize (name)
-		Normalization[name.to_sym] || name.to_s
+		Normalization[name] || name
 	end
+
+	def self.[] (value)
+		%x{
+			if (value instanceof MouseEvent) {
+				return #{Mouse.new(value)};
+			}
+			else if (value instanceof KeyboardEvent) {
+				return #{Keyboard.new(value)};
+			}
+			else if (value instanceof MutationEvent) {
+				return #{Mutation.new(value)};
+			}
+			else {
+				return #{Event.new(value)};
+			}
+		}
+	end
+
+	include Native
 
 	def name
 		`#@native.eventName`
@@ -30,4 +48,8 @@ class Event
 	end
 end
 
-end
+end; end
+
+require 'opal/browser/document/event/mouse'
+require 'opal/browser/document/event/keyboard'
+require 'opal/browser/document/event/mutation'

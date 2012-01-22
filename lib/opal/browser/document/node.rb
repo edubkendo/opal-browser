@@ -14,17 +14,11 @@ module Node
 	include Native
 
 	def == (other)
-		`#@native === #{other.to_native}`
+		`#@native === #{Native(other).to_native}`
 	end
 
 	def hash
-		%x{
-			if (#@native.$id) {
-				return #@native.$id;
-			}
-
-			return #@native.$id = rb_hash_yield++;
-		}
+		# TODO: implement this properly
 	end
 
 	def name
@@ -44,7 +38,7 @@ module Node
 	end
 
 	def parent
-		Element.new(`#@native.parentNode`) unless Opal.undefined?(`#@native.parentNode`)
+		Element.new(`#@native.parentNode`) # if defined? `#@native.parentNode`
 	end
 
 	def xpath (path)
@@ -73,7 +67,9 @@ module Node
 	def on (what, capture = false, &block)
 		raise ArgumentError, 'no block has been passed' unless block
 
-		`#@native.addEventListener(#{Document::Event.normalize(what)}, function (event) { #{block.call(Element.new(`this`), Document::Event.new(event))} }, capture)`
+		`#@native.addEventListener(#{Event.normalize(what)}, function (event) {
+			#{block.(Element.new(`this`), Event[`event`])}
+		}, capture)`
 	end
 
 	def fire (what, data, bubble = false)
