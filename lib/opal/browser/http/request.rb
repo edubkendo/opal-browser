@@ -20,7 +20,7 @@ class Request
 
 	DefaultHeaders = Headers[{
 		'X-Requested-With' => 'XMLHttpRequest',
-#		'X-Opal-Version'   => Opal::VERSION,
+		'X-Opal-Version'   => OPAL_VERSION,
 		'Accept'           => 'text/javascript, text/html, application/xml, text/xml, */*'
 	}]
 
